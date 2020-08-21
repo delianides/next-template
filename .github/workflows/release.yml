@@ -38,7 +38,7 @@ jobs:
         uses: martinbeentjes/npm-get-version-action@master
 
       - name: export-next
-        run: npm run export -- -o next-template
+        run: npm ci && npm run export -- -o next-template
       
       - run: mkdir next-template-zip
       - uses: montudor/action-zip@v0.1.0
