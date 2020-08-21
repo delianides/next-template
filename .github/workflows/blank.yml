@@ -1,0 +1,65 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Deploy Release
+
+# Controls when the action will run. Triggers the workflow on push or pull request
+# events but only for the master branch
+on:
+  pull_request:
+    types: [closed]
+    branches:
+      - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.merged
+
+    steps:
+      - name: checkout
+        uses: actions/checkout@v1
+      
+      - name: Hydrate Cache
+        uses: actions/cache@v1
+        id: npm-modules
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-v2-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-npm
+            
+      - name: Use Node.js 12.16.3 
+        uses: actions/setup-node@v1
+        with:
+          node-version: '12.16.3'
+      
+      - name: get-npm-version
+        id: package-version
+        uses: martinbeentjes/npm-get-version-action@master
+
+      - name: export-next
+        run: npm run export -- -o next-template
+      
+      - run: mkdir next-template-zip
+      - uses: montudor/action-zip@v0.1.0
+        with:
+          args: zip -qq -r ./next-template-zip/next-template.zip ./next-template
+      - uses: actions/upload-artifact@master
+        with:
+          name: next-template
+          path: next-template-zip
+        
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ steps.package-version.outputs.current-version}}
+          body: |
+            Changes in this Release
+            - First Change
+            - Second Change
+          draft: false
+          prerelease: false
