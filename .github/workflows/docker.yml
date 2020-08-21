@@ -1,0 +1,31 @@
+
+name: Deploy Docker
+
+on:
+  pull_request:
+    types: [closed]
+    branches:
+      - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+if: github.event.pull_request.merged
+
+    steps:
+      - name: checkout
+        if: github.event.pull_request.merged
+        uses: actions/checkout@v1
+with:
+ref: master
+
+- name: Publish to Registry
+  uses: elgohr/Publish-Docker-Github-Action@master
+  with:
+    name: delianides/next-template/site
+    username: "delianides"
+    password: ${{ secrets.GITHUB_TOKEN }}
+    registry: docker.pkg.github.com
+
+
+      
