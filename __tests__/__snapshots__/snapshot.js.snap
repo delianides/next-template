@@ -41,7 +41,7 @@ exports[`renders homepage unchanged 1`] = `
     </nav>
   </header>
   <h1>
-    Hello Next.js 👋
+    Hello Next.js at Underbelly 👋
   </h1>
   <p>
     <a
