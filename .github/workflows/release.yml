@@ -37,8 +37,8 @@ jobs:
         id: package-version
         uses: martinbeentjes/npm-get-version-action@master
 
-      - name: export-next
-        run: npm ci && npm run export -- -o next-template
+      - run: npm ci
+      - run: npm run build && npm run export -- -o next-template
       
       - run: mkdir next-template-zip
       - uses: montudor/action-zip@v0.1.0
