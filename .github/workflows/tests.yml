@@ -35,4 +35,4 @@ jobs:
       with:
         node-version: '12.16.3'
     - run: npm ci
-    - run: npm run jest
+    - run: npm run test
